@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory - Jewelry Store</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #ffffff, #f0e6ff); /* Gradient Background */
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Align items between logo and logout */
+            padding: 30px;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .logo img {
+            width: 100px; /* Larger Logo */
+            height: 100px;
+            margin-right: 15px;
+            border-radius: 10px; /* Rounded Corners for Logo */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav ul li button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icon and text */
+        }
+
+        .sidebar nav ul li button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+
+        .sidebar nav ul li button svg {
+            width: 20px;
+            height: 20px;
+            fill: white; /* Icon color */
+        }
+
+        /* Indian Design SVG */
+        .indian-pattern {
+            margin-top: 20px;
+            opacity: 0.3; /* Subtle visibility */
+        }
+
+        .indian-pattern svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Logout Button */
+        .logout-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            text-align: center;
+        }
+
+        .logout-button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+            border-radius: 15px; /* Rounded Corners */
+            margin: 20px;
+        }
+
+        .main-content h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styling */
+        .main-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .main-content table th,
+        .main-content table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .main-content table th {
+            background-color: #c70039;
+            color: white;
+        }
+
+        .main-content table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+         /* Add Product Form Styling */
+         .add-product-form {
+            margin-bottom: 20px;
+        }
+
+        .add-product-form input,
+        .add-product-form button {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .add-product-form button {
+            background-color: #c70039;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-product-form button:hover {
+            background-color: #a3002f;
+        }
+
+            /* Action Buttons Styling */
+    .action-buttons button {
+        padding: 5px 10px;
+        margin-right: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: opacity 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+    }
+
+    /* Edit Button */
+    .action-buttons .edit-btn {
+        background-color: #4CAF50; /* Green for Edit */
+        color: white;
+    }
+
+    .action-buttons .edit-btn:hover {
+        background-color: #45a049; /* Darker green on hover */
+        transform: scale(1.05); /* Slight zoom effect */
+    }
+
+    /* Delete Button */
+    .action-buttons .delete-btn {
+        background-color: #f44336; /* Red for Delete */
+        color: white;
+    }
+
+    .action-buttons .delete-btn:hover {
+        background-color: #da190b; /* Darker red on hover */
+        transform: scale(1.05); /* Slight zoom effect */
+    }
+
+    
+        /* Improve spacing and layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .controls input, .controls select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .action-buttons button {
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+    
+
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="Logo.jpg" alt="Jewelry Store Logo">
+        </div>
+        <nav>
+            <ul>
+                <li>
+                    <button onclick="window.location.href='inventory.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V9h-2v2z"/>
+                        </svg>
+                        Inventory
+                    </button>
+                </li>
+                <li>
+                      <button onclick="window.location.href='sales.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM3 3h2l3.6 7.59L7.25 13.5C7.1 13.8 7 14.1 7 14.5c0 .83.67 1.5 1.5 1.5h9v-2h-8.22c-.08 0-.14-.02-.18-.06l.78-1.44H17c.76 0 1.41-.43 1.73-1.09L21 5H6.42l-.94-2H3z"/>
+                        </svg>
+                        Sales
+                    </button>
+                </li>
+            <!-- Billing Button -->
+                <li>
+                    <button onclick="window.location.href='billing.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M19 2h-4l-2 2-2-2H5c-1.1 0-2 .9-2 2v18l3-1.5L9 22l3-1.5L15 22l3-1.5 3 1.5V4c0-1.1-.9-2-2-2zM6 8h12v2H6V8zm0 4h8v2H6v-2zm0 4h12v2H6v-2z"/>
+                        </svg>
+                        Billing
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Indian Design SVG -->
+        <div class="indian-pattern">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <circle cx="20" cy="20" r="10" fill="#FFD700" />
+                <circle cx="60" cy="20" r="10" fill="#FFD700" />
+                <circle cx="100" cy="20" r="10" fill="#FFD700" />
+                <circle cx="140" cy="20" r="10" fill="#FFD700" />
+                <circle cx="180" cy="20" r="10" fill="#FFD700" />
+                <circle cx="20" cy="60" r="10" fill="#FFD700" />
+                <circle cx="60" cy="60" r="10" fill="#FFD700" />
+                <circle cx="100" cy="60" r="10" fill="#FFD700" />
+                <circle cx="140" cy="60" r="10" fill="#FFD700" />
+                <circle cx="180" cy="60" r="10" fill="#FFD700" />
+            </svg>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+    </div>
+
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Inventory</h1>
+
+        <form class="add-product-form" id="addProductForm">
+            <input type="text" id="item" placeholder="Item Name" required>
+            <select id="itemType" required style="padding: 8px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; cursor: pointer;">
+                <option value="" disabled selected>Select Item Type</option>
+                <option value="91.6 %">91.6 %</option>
+                <option value="75 %">75 %</option>
+            </select>
+            <input type="number" id="quantity" placeholder="Quantity" required>
+            <input type="number" id="WeightInGrams" placeholder="Weight In Grams" required>
+            <button type="submit" style="margin-top: 10px;">Add Product</button>
+        </form>
+
+        <!-- Search and Sort Controls -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search by Item Name...">
+            <select id="sortSelect">
+                <option value="none">Sort By</option>
+                <option value="itemType">Item Type</option>
+                <option value="quantity_asc">Quantity (Low to High)</option>
+                <option value="quantity_desc">Quantity (High to Low)</option>
+            </select>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Type</th>
+                    <th>HSN</th>
+                    <th>Quantity</th>
+                    <th>Weight (g)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="inventoryTable">
+                <!-- Inventory data will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from './firebase.js';
+
+        async function fetchInventory() {
+            try {
+                const inventoryRef = collection(db, "inventory");
+                const querySnapshot = await getDocs(inventoryRef);
+                const inventoryTable = document.getElementById("inventoryTable");
+                inventoryTable.innerHTML = "";
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const row = `
+                        <tr>
+                            <td>${data.item}</td>
+                            <td>${data.itemType}</td>
+                            <td>${data.HSN}</td>
+                            <td>${data.quantity}</td>
+                            <td>${data.WeightInGrams}</td>
+                            <td class="action-buttons">
+                                <button class="edit-btn" onclick="editProduct('${doc.id}', '${data.item}', '${data.itemType}', ${data.quantity}, ${data.WeightInGrams})">Edit</button>
+                                <button class="delete-btn" onclick="deleteProduct('${doc.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    inventoryTable.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error fetching inventory: ", error);
+            }
+        }
+
+        document.getElementById("addProductForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const item = document.getElementById("item").value;
+            const itemType = document.getElementById("itemType").value;
+            const quantity = parseInt(document.getElementById("quantity").value);
+            const WeightInGrams = parseInt(document.getElementById("WeightInGrams").value);
+
+            if (!item || !itemType || isNaN(quantity) || isNaN(WeightInGrams)) {
+                alert("Please fill in all fields correctly.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "inventory"), {
+                    item: item,
+                    HSN: 7112,
+                    itemType: itemType,
+                    quantity: quantity,
+                    WeightInGrams: WeightInGrams
+                });
+
+                alert("Product added successfully!");
+                document.getElementById("addProductForm").reset();
+                fetchInventory();
+            } catch (error) {
+                console.error("Error adding product: ", error);
+                alert("Failed to add product.");
+            }
+        });
+
+        window.editProduct = async (id, item, itemType, quantity, WeightInGrams) => {
+            const newItem = prompt("Enter new item name:", item);
+            const newItemType = prompt("Enter new item type:", itemType);
+            const newQuantity = parseInt(prompt("Enter new quantity:", quantity));
+            const newWeight = parseInt(prompt("Enter new weight in grams:", WeightInGrams));
+
+            if (!newItem || !newItemType || isNaN(newQuantity) || isNaN(newWeight)) {
+                alert("Invalid input. Please try again.");
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, "inventory", id), {
+                    item: newItem,
+                    itemType: newItemType,
+                    quantity: newQuantity,
+                    WeightInGrams: newWeight
+                });
+
+                alert("Product updated successfully!");
+                fetchInventory();
+            } catch (error) {
+                console.error("Error updating product: ", error);
+                alert("Failed to update product.");
+            }
+        };
+
+        window.deleteProduct = async (id) => {
+            if (!confirm("Are you sure you want to delete this product?")) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, "inventory", id));
+                alert("Product deleted successfully!");
+                fetchInventory();
+            } catch (error) {
+                console.error("Error deleting product: ", error);
+                alert("Failed to delete product.");
+            }
+        };
+
+        function filterTable() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("#inventoryTable tr");
+
+            rows.forEach(row => {
+                const itemName = row.cells[0]?.textContent.toLowerCase();
+                row.style.display = itemName.includes(input) ? "" : "none";
+            });
+        }
+
+        function sortTable() {
+            const sortBy = document.getElementById("sortSelect").value;
+            const table = document.getElementById("inventoryTable");
+            const rows = Array.from(table.querySelectorAll("tr"));
+
+            if (sortBy === "none") return;
+
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                switch (sortBy) {
+                    case "itemType":
+                        aValue = a.cells[1]?.textContent.toLowerCase();
+                        bValue = b.cells[1]?.textContent.toLowerCase();
+                        return aValue.localeCompare(bValue);
+                    case "quantity_asc":
+                        aValue = parseInt(a.cells[2]?.textContent);
+                        bValue = parseInt(b.cells[2]?.textContent);
+                        return aValue - bValue;
+                    case "quantity_desc":
+                        aValue = parseInt(a.cells[2]?.textContent);
+                        bValue = parseInt(b.cells[2]?.textContent);
+                        return bValue - aValue;
+                }
+            });
+
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("searchInput").addEventListener("input", filterTable);
+            document.getElementById("sortSelect").addEventListener("change", sortTable);
+            fetchInventory();
+        });
+
+        if (sessionStorage.getItem("isLoggedIn") !== "true") {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

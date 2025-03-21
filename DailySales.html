@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Sales - Jewelry Store</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .sidebar button:hover {
+            background-color: #0056b3;
+        }
+
+        .logout-button {
+            margin-top: 20px;
+            background-color: #dc3545;
+        }
+
+        .logout-button:hover {
+            background-color: #a71d2a;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .nested-table {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .total-sales {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="Logo.jpg" alt="Jewelry Store Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><button onclick="window.location.href='inventory.html'">Inventory</button></li>
+                <li><button onclick="window.location.href='sales.html'">Sales</button></li>
+                <li><button onclick="window.location.href='billing.html'">Billing</button></li>
+            </ul>
+        </nav>
+        <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Daily Sales</h1>
+
+        <!-- Total Sales Display -->
+        <div class="total-sales" id="totalSales"></div>
+
+        <!-- Sales Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Payment Method</th>
+                    <th>Total Amount (₹)</th>
+                    <th>Sold At</th>
+                </tr>
+            </thead>
+            <tbody id="salesItems">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        // Import Firestore modules from firebase.js
+        import { db, collection, getDocs } from './firebase.js';
+
+        // Function to fetch and display today's sales data
+        async function fetchDailySales() {
+            try {
+                const salesRef = collection(db, "sales");
+                const querySnapshot = await getDocs(salesRef);
+
+                if (querySnapshot.empty) {
+                    console.log("No sales records found.");
+                    document.getElementById("salesItems").innerHTML = "<tr><td colspan='4'>No sales records available.</td></tr>";
+                    return;
+                }
+
+                const salesContainer = document.getElementById("salesItems");
+                salesContainer.innerHTML = ""; // Clear existing rows
+
+                let totalSalesAmount = 0; // To calculate total sales for the day
+
+                querySnapshot.forEach((doc) => {
+                    const saleData = doc.data();
+
+                    // Ensure all required fields exist
+                    const customerName = saleData.customerName || "-";
+                    const paymentMethod = saleData.paymentMethod || "-";
+                    const soldAt = saleData.soldAt?.toDate();
+                    const includeGST = saleData.includeGST || false;
+
+                    // Check if the sale was made today
+                    const today = new Date();
+                    const saleDate = new Date(soldAt);
+                    if (
+                        saleDate.getDate() !== today.getDate() ||
+                        saleDate.getMonth() !== today.getMonth() ||
+                        saleDate.getFullYear() !== today.getFullYear()
+                    ) {
+                        return; // Skip sales not from today
+                    }
+
+                    // Calculate total amount based on GST inclusion
+                    const totalAmount = includeGST
+                        ? saleData.totalAmount.toFixed(2)
+                        : saleData.items.reduce(
+                              (sum, item) => sum + (item.totalPriceWithoutGST || 0),
+                              0
+                          ).toFixed(2);
+
+                    // Add to total sales amount
+                    totalSalesAmount += parseFloat(totalAmount);
+
+                    // Create the main row for the customer
+                    const mainRow = `
+                        <tr>
+                            <td rowspan="2">${customerName}</td>
+                            <td>${paymentMethod}</td>
+                            <td>${totalAmount}</td>
+                            <td>${soldAt.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <table class="nested-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Item Type</th>
+                                            <th>Quantity</th>
+                                            <th>Price Per Unit (₹)</th>
+                                            <th>CGST (₹)</th>
+                                            <th>SGST (₹)</th>
+                                            <th>Total Price ${includeGST ? "With GST" : "Without GST"} (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${saleData.items.map(item => `
+                                            <tr>
+                                                <td>${item.itemName || "-"}</td>
+                                                <td>${item.itemType || "-"}</td>
+                                                <td>${item.quantity || 0}</td>
+                                                <td>${(item.pricePerUnit || 0).toFixed(2)}</td>
+                                                <td>${(item.cgst || 0).toFixed(2)}</td>
+                                                <td>${(item.sgst || 0).toFixed(2)}</td>
+                                                <td>${includeGST
+                                                    ? (item.totalPriceWithGST || 0).toFixed(2)
+                                                    : (item.totalPriceWithoutGST || 0).toFixed(2)}</td>
+                                            </tr>
+                                        `).join("")}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    `;
+                    salesContainer.innerHTML += mainRow;
+                });
+
+                // Display total sales amount
+                document.getElementById("totalSales").textContent = `Total Sales Today: ₹${totalSalesAmount.toFixed(2)}`;
+            } catch (error) {
+                console.error("Error fetching sales: ", error);
+                alert("Failed to fetch sales data.");
+            }
+        }
+
+        // Fetch daily sales data when the page loads
+        fetchDailySales();
+    </script>
+</body>
+</html>

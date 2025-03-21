@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mukta:wght@400;700&display=swap" rel="stylesheet">
+    <title>Test Generate Invoice</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5dc; /* Ivory background */
+            color: #333;
+        }
+        button {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #b22222;
+            color: #ffd700;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #8b0000;
+        }
+    </style>
+</head>
+<body>
+    <button id="test-generate-invoice">Generate Invoice</button>
+
+    <script>
+        // Example data for testing
+        const customerName = "Rahul Sharma";
+const customerPhone = "9876543210";
+const customerEmail = "rahul.sharma@example.com";
+const paymentMethod = "Cash & UPI";
+const cashAmount = 20000;
+const upiAmount = 10000;
+const oldGoldReturnAmount = 5000;
+const BilledBy = "Amit Verma";
+const silverRate = 75;  // Silver rate per gram
+const GoldRate = 6000;  // Gold rate per gram
+const includeGST = true;
+
+const itemsForSale = [
+    {
+        itemName: "Gold Necklace",
+        itemType: 22,  // 22K Gold (Purity in %)
+        HSN: "71131930", // HSN Code for gold jewelry
+        quantity: 1, 
+        GoldTotalPrice: (22 / 100) * 15 * 6000, // (Purity % * Net Weight * Gold Rate)
+        netWeight: 15, // in grams
+        grossWeight: 16, // in grams
+        goldRate: 6000, // Gold rate per gram
+        makingChargesPercentage: 10, // 10% making charge
+        totalPriceWithoutGST: ((22 / 100) * 15 * 6000) + (((22 / 100) * 15 * 6000) * 10 / 100), // Base + Making Charges
+        purity: 22, // Explicit purity field
+        totalPrice: ((22 / 100) * 15 * 6000) + (((22 / 100) * 15 * 6000) * 10 / 100) // Without GST (GST can be added later)
+    },
+    {
+        itemName: "Gold Ring",
+        itemType: 18,  // 18K Gold
+        HSN: "71131910",
+        quantity: 1,
+        GoldTotalPrice: (18 / 100) * 5 * 6000,
+        netWeight: 5, // in grams
+        grossWeight: 5.5, // in grams
+        goldRate: 6000, 
+        makingChargesPercentage: 8, // 8% making charge
+        totalPriceWithoutGST: ((18 / 100) * 5 * 6000) + (((18 / 100) * 5 * 6000) * 8 / 100),
+        purity: 18,
+        totalPrice: ((18 / 100) * 5 * 6000) + (((18 / 100) * 5 * 6000) * 8 / 100)
+    },
+    {
+        itemName: "Silver Bracelet",
+        itemType: 100,  // 100% Silver (Pure silver)
+        HSN: "71131130",
+        quantity: 1,
+        GoldTotalPrice: (100 / 100) * 20 * 75,  // Since it's silver, use silver rate
+        netWeight: 20, // in grams
+        grossWeight: 21, // in grams
+        goldRate: 75, // Silver rate per gram
+        makingChargesPercentage: 5, // 5% making charge
+        totalPriceWithoutGST: ((100 / 100) * 20 * 75) + (((100 / 100) * 20 * 75) * 5 / 100),
+        purity: 100,
+        totalPrice: ((100 / 100) * 20 * 75) + (((100 / 100) * 20 * 75) * 5 / 100)
+    }
+];
+
+
+let totalAmount = 0;
+itemsForSale.forEach(item => {
+    const baseTotalPrice = (item.itemType * (item.itemType === 100 ? silverRate : GoldRate) * item.netWeight) / 100;
+    const finalTotalPrice = baseTotalPrice + (baseTotalPrice * item.makingChargePercentage / 100);
+    totalAmount += finalTotalPrice;
+});
+
+if (includeGST) {
+    totalAmount += totalAmount * 0.03; // 3% GST
+}
+
+        // Attach event listener to the button
+        document.getElementById("test-generate-invoice").addEventListener("click", () => {
+            generateInvoice(customerName, customerPhone, customerEmail, paymentMethod, itemsForSale, totalAmount, includeGST);
+        });
+
+        // Helper function to convert numbers to words
+        function numberToWords(num) {
+            const units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+            const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+            if (num === 0) return "Zero";
+
+            function convertChunk(n) {
+                let result = "";
+                if (n >= 100) {
+                    result += units[Math.floor(n / 100)] + " Hundred ";
+                    n %= 100;
+                }
+                if (n >= 20) {
+                    result += tens[Math.floor(n / 10)] + " ";
+                    n %= 10;
+                } else if (n >= 10) {
+                    result += teens[n - 10] + " ";
+                    n = 0;
+                }
+                if (n > 0) result += units[n] + " ";
+                return result.trim();
+            }
+
+            let result = "";
+            if (num >= 10000000) {
+                result += convertChunk(Math.floor(num / 10000000)) + " Crore ";
+                num %= 10000000;
+            }
+            if (num >= 100000) {
+                result += convertChunk(Math.floor(num / 100000)) + " Lakh ";
+                num %= 100000;
+            }
+            if (num >= 1000) {
+                result += convertChunk(Math.floor(num / 1000)) + " Thousand ";
+                num %= 1000;
+            }
+            if (num > 0) result += convertChunk(num);
+
+            return result.trim();
+        }
+
+        // Paste the generateInvoice function here (from your code)
+        function generateInvoice(customerName, customerPhone, customerEmail, paymentMethod, itemsForSale, totalAmount, includeGST,cashAmount,upiAmount,oldGoldReturnAmount,BilledBy,silverRate,GoldRate) {
+    // Create a new container for the invoice
+    const invoiceContainer = document.createElement("div");
+    invoiceContainer.id = "invoice";
+    invoiceContainer.style.position = "fixed";
+    invoiceContainer.style.top = "0";
+    invoiceContainer.style.left = "0";
+    invoiceContainer.style.width = "100%";
+    invoiceContainer.style.height = "100%";
+    invoiceContainer.style.backgroundColor = "#FFFFFF"; // Ivory background
+    invoiceContainer.style.zIndex = "1000";
+    invoiceContainer.style.overflowY = "auto";
+    invoiceContainer.style.padding = "10px";
+
+    // Header Section
+    const headerSection = document.createElement("div");
+    headerSection.style.display = "flex";
+    headerSection.style.alignItems = "center";
+    headerSection.style.justifyContent = "space-between";
+    headerSection.style.padding = "20px";
+    headerSection.style.background = "linear-gradient(135deg, #c9ae79, #a07e4a)";
+    headerSection.style.color = "#FFFFFF"; // Gold text
+    headerSection.style.position = "relative";
+    headerSection.style.marginBottom = "20px";
+
+    
+    const logo = document.createElement("img");
+    logo.src = "Logobg.png";
+    logo.style.width = "150px";
+    logo.style.height = "130px";
+    logo.style.borderRadius = "10px";
+    logo.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.2)";
+    headerSection.appendChild(logo);
+
+    // Center: Shree Devji and Madan Jewellers
+    const centerHeader = document.createElement("div");
+    centerHeader.style.textAlign = "center";
+    centerHeader.style.flexGrow = "1";
+    centerHeader.style.fontFamily="Montessarat"
+    centerHeader.style.marginTop="55px"
+    centerHeader.style.display = "flex";
+    centerHeader.style.alignItems = "center";
+    centerHeader.style.justifyContent = "center";
+    centerHeader.style.paddingLeft = "60px";
+
+    
+centerHeader.style.textAlign = "center";  // Center align the text
+centerHeader.style.display = "flex";
+centerHeader.style.flexDirection = "column"; // Stack elements vertically
+centerHeader.style.alignItems = "center"; // Ensure both are aligned centrally
+
+const shreeDevji = document.createElement("h5");
+shreeDevji.textContent = "SHREE DEVJI";
+shreeDevji.style.fontSize = "10px";  // Make it slightly bigger for better visibility
+shreeDevji.style.margin = "0"; 
+shreeDevji.style.color = "#FFFFFF";  
+shreeDevji.style.fontWeight = "bold";
+shreeDevji.style.letterSpacing = "1px";
+shreeDevji.style.display = "block"; // Ensure it appears above h1
+centerHeader.appendChild(shreeDevji);
+
+const madanJewellers = document.createElement("h1");
+madanJewellers.textContent = "Madan Jewellers";
+madanJewellers.style.fontSize = "30px";  // Adjust font size
+madanJewellers.style.margin = "0";  
+madanJewellers.style.color = "#FFFFFF";  
+madanJewellers.style.letterSpacing = "2px";
+madanJewellers.style.textShadow = "2px 2px 4px rgba(0, 0, 0, 0.3)";
+madanJewellers.style.display = "block"; // Ensure it appears below h5
+centerHeader.appendChild(madanJewellers);
+
+// Address below the store name
+const address = document.createElement("p");
+address.textContent = "2, Viviani Rd, Frazer Town, Bengaluru";
+address.style.fontSize = "14px";
+address.style.margin = "50px 0 0 0";  // Add a slight margin for spacing
+address.style.color = "#FFFFFF";  
+address.style.letterSpacing = "1px";
+centerHeader.appendChild(address);
+
+
+//GST TEXT
+const GSTIN = document.createElement("p");
+GSTIN.textContent = "GSTIN:29AB0PB0783E1Z0";
+GSTIN.style.fontSize = "10px";
+GSTIN.style.color = "#FFFFFF";  
+GSTIN.style.letterSpacing = "1px";
+GSTIN.style.textAlign = "right";  // Align text to the right
+GSTIN.style.display = "flex";
+GSTIN.style.position = "absolute"; // Absolute position 
+GSTIN.style.justifyContent = "flex-end";  
+GSTIN.style.left = "650px"; 
+GSTIN.style.top = "170px"; 
+centerHeader.appendChild(GSTIN);
+
+
+
+    headerSection.appendChild(centerHeader);
+
+    // Right Side: Contact Details
+    const rightHeader = document.createElement("div");
+    rightHeader.style.textAlign = "center";
+    rightHeader.style.fontSize = "13px";
+    rightHeader.style.fontWeight = "bold";
+    rightHeader.style.color = "#FFFFFF"; // Gold text
+    // rightHeader.style.lineHeight = "1.5";
+    rightHeader.style.marginTop = "-80px";
+    rightHeader.innerHTML = `
+        <p>Cell: +91 9844215003</p>
+        <p>      +91 9535528744</p>
+    `;
+    headerSection.appendChild(rightHeader);
+    invoiceContainer.appendChild(headerSection);
+
+    // Invoice Title
+    const title = document.createElement("h1");
+    title.textContent = "Invoice";
+    title.style.textAlign = "center";
+    title.style.marginBottom = "10px";
+    title.style.color = "#c70039";
+    invoiceContainer.appendChild(title);
+
+    // Flex Container for Tables
+    const tableContainer = document.createElement("div");
+    tableContainer.style.display = "flex";
+    tableContainer.style.justifyContent = "space-between";
+    tableContainer.style.marginBottom = "20px";
+
+// Customer Details Table (Highly Compact)
+const customerDetailsTable = document.createElement("table");
+customerDetailsTable.style.width = "200px"; // Let content define width
+customerDetailsTable.style.textAlign = "center"; // Let content define width
+customerDetailsTable.style.borderCollapse = "collapse";
+customerDetailsTable.style.fontSize = "14px"; // Keep readable
+customerDetailsTable.style.marginRight = "auto";
+
+customerDetailsTable.innerHTML = `
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; font-weight: bold; color: #8b0000; white-space: nowrap;">Customer Name</td>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; white-space: nowrap;">${customerName}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; font-weight: bold; color: #8b0000; white-space: nowrap;">Customer Phone</td>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; white-space: nowrap;">${customerPhone}</td>
+    </tr>
+`;
+tableContainer.appendChild(customerDetailsTable);
+
+    // Summary Table
+    const summaryTable = document.createElement("table");
+    summaryTable.style.width = "400px";
+    summaryTable.style.borderCollapse = "collapse";
+    summaryTable.style.fontSize = "14px";
+    summaryTable.style.marginLeft = "auto";
+
+    summaryTable.innerHTML = `
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">Date</td>
+            <td style="border: 1px solid #8b0000; padding: 8px;">${new Date().toLocaleDateString()}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">GOLD 24K:</td>
+            <td style="border: 1px solid #8b0000; padding: 8px;">${itemsForSale[0].goldRate}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">Silver 999:</td>
+            <td style="border: 1px solid #8b0000; padding: 8px;">${silverRate} </td>
+        </tr>
+    `;
+    tableContainer.appendChild(summaryTable);
+
+    invoiceContainer.appendChild(tableContainer);
+
+   // Table for Items
+const table = document.createElement("table");
+table.style.width = "100%";
+table.style.borderCollapse = "collapse";
+table.style.marginTop = "20px";
+table.style.fontSize = "14px";
+table.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)";
+
+table.innerHTML = `
+    <thead>
+        <tr>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">item Name</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Purity</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">HSN</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Quantity</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Net Weight</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Gross Weight</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Gold Amount</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Making Charges(W/S)</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #b22222; color: #ffd700; font-weight: bold;">Total Amount (₹)</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+`;
+
+const tbody = table.querySelector("tbody");
+
+// Populate table with item details
+itemsForSale.forEach((item) => {
+    const cgstDisplay = includeGST ? `1.5 %` : "-";
+    const sgstDisplay = includeGST ? `1.5 %` : "-";
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.itemName}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.purity}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.HSN}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.quantity}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.netWeight}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.grossWeight}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.GoldTotalPrice.toFixed(2)}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.makingChargesPercentage}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.totalPrice.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+});
+
+invoiceContainer.appendChild(table);
+
+// Create a Flex Container for Amount in Words and Summary Table
+const summaryContainer = document.createElement("div");
+summaryContainer.style.display = "flex";
+summaryContainer.style.justifyContent = "space-between";
+summaryContainer.style.alignItems = "center";
+summaryContainer.style.marginTop = "10px";
+
+// Amount in Words (Left Side)
+const amountInWords = document.createElement("p");
+amountInWords.innerHTML = `<strong>Amount in Words:</strong> ${numberToWords(Math.round(totalAmount))} Rupees Only`;
+amountInWords.style.color = "#8b0000"; // Deep red text
+amountInWords.style.fontWeight = "bold";
+amountInWords.style.flex = "1"; // Takes up available space on the left
+
+// New Summary Table for CGST, SGST, and Total Amount (Right Side)
+const totalSummaryTable = document.createElement("table");
+totalSummaryTable.style.width = "250px"; // Adjust width
+totalSummaryTable.style.borderCollapse = "collapse";
+totalSummaryTable.style.fontSize = "14px";
+
+totalSummaryTable.innerHTML = `
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">CGST</td>
+        <td style="border: 1px solid #8b0000; padding: 8px;">${includeGST ? "1.5 %" : "-"}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">SGST</td>
+        <td style="border: 1px solid #8b0000; padding: 8px;">${includeGST ? "1.5 %" : "-"}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">Total Amount</td>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold;">₹ ${totalAmount.toFixed(2)}</td>
+    </tr>
+`;
+
+
+// Append Amount in Words and Summary Table inside the flex container
+summaryContainer.appendChild(amountInWords);
+summaryContainer.appendChild(totalSummaryTable);
+
+// Append the entire summary container to invoiceContainer
+invoiceContainer.appendChild(summaryContainer);
+
+// ✅ Create a div for Payment Breakdown (Small Table)
+const paymentSummaryDiv = document.createElement("div");
+paymentSummaryDiv.style.width = "max-content"; // Small table width
+paymentSummaryDiv.style.marginTop = "10px"; // Add some space before this section
+
+paymentSummaryDiv.innerHTML = `
+    <p><strong>Payment Breakdown:</strong></p>
+    <table style="border-collapse: collapse; width: auto; margin-top: 5px; font-size: 14px;">
+        <tr>
+            <th style="border: 1px solid #8b0000; padding: 4px; background-color: #f8f0e3; color: #8b0000;">Method</th>
+            <th style="border: 1px solid #8b0000; padding: 4px; background-color: #f8f0e3; color: #8b0000;">Amount (₹)</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 4px;">Cash</td>
+            <td style="border: 1px solid #8b0000; padding: 4px;">₹${cashAmount}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 4px;">UPI</td>
+            <td style="border: 1px solid #8b0000; padding: 4px;">₹${upiAmount}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 4px;">Old Gold</td>
+            <td style="border: 1px solid #8b0000; padding: 4px;">₹${oldGoldReturnAmount}</td>
+        </tr>
+    </table>
+`;
+
+// Append the entire summary container to invoiceContainer
+invoiceContainer.appendChild(paymentSummaryDiv);
+
+
+    // Signature and Terms Section
+const signatureTermsSection = document.createElement("div");
+signatureTermsSection.style.display = "flex";
+signatureTermsSection.style.flexDirection = "column";  // Stack items vertically
+signatureTermsSection.style.alignItems = "flex-start"; // Align left
+signatureTermsSection.style.marginTop = "5px"; // Space from above content
+signatureTermsSection.style.width = "100%";
+
+// Authorized Signatory
+const signatureBox = document.createElement("div");
+signatureBox.style.width = "30%";  // Smaller width for signature
+signatureBox.style.border = "1px solid #000"; // Dark border for signature box
+signatureBox.style.padding = "10px";
+signatureBox.style.textAlign = "center";
+signatureBox.style.fontWeight = "bold";
+signatureBox.innerHTML = `
+    <strong>Billed By</strong><br><br>
+            ${BilledBy}
+`;
+signatureTermsSection.appendChild(signatureBox);
+
+// Terms and Conditions - Positioned as a footer
+const termsSection = document.createElement("div");
+termsSection.style.marginTop = "10px"; // Space below signature box
+termsSection.style.width = "100%";
+termsSection.style.fontSize = "12px";
+termsSection.style.color = "#555";
+termsSection.style.borderTop = "1px solid #000"; // Footer-like separator
+termsSection.style.paddingTop = "10px";
+termsSection.innerHTML = `
+`;
+
+signatureTermsSection.appendChild(termsSection);
+
+invoiceContainer.appendChild(signatureTermsSection);
+
+    // Append the invoice to the body
+    document.body.appendChild(invoiceContainer);
+
+    // Print the invoice
+    setTimeout(() => {
+    window.print();
+}, 2000); // Delay by 1 second
+
+// // Refresh page - printing
+// window.onafterprint = () => {
+//     window.location.reload();
+// };
+
+}
+
+
+    </script>
+</body>
+</html>

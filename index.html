@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewelry Store Login</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Inter', sans-serif; /* Modern Sans-Serif Font */
+            background-color: #f9f9f9; /* Soft Light Gray Background */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Login Container */
+        .login-container {
+            background: #ffffff; /* White Background */
+            padding: 40px;
+            border-radius: 12px; /* Rounded Corners */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Logo Placeholder */
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            margin-bottom: 50px;
+            border-radius: 50%; /* Circular Shape */
+            overflow: hidden; /* Ensures the image fits perfectly within the circle */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow for Logo */
+        }
+
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image scales properly */
+        }
+
+        /* Form Styling */
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0; /* Light Gray Border */
+            border-radius: 8px; /* Rounded Corners */
+            font-size: 16px;
+            transition: border-color 0.3s ease; /* Smooth Transition */
+        }
+
+        .login-form input:focus {
+            border-color: #c70039; /* Highlight Border on Focus */
+            outline: none;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 14px;
+            background-color: #c70039; /* Deep Red Button */
+            color: white;
+            border: none;
+            border-radius: 8px; /* Rounded Corners */
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth Transition */
+        }
+
+        .login-form button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+        }
+
+        /* Aesthetic Elements */
+        .indian-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23FFD700"><circle cx="10" cy="10" r="8"/><circle cx="30" cy="10" r="8"/><circle cx="50" cy="10" r="8"/><circle cx="70" cy="10" r="8"/><circle cx="90" cy="10" r="8"/></svg>') repeat;
+            opacity: 0.05; /* Very Subtle Pattern */
+            z-index: -1;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <!-- Indian Pattern Background -->
+    <div class="indian-pattern"></div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <!-- Logo Placeholder -->
+        <div class="logo-placeholder">
+            <img src="Logo.jpg" alt="Jewelry Store Logo">
+        </div>
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+        // Import Firestore modules from firebase.js
+        import { db, collection, query, where, getDocs } from './firebase.js';
+
+        // Handle Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Reference the users collection
+                const usersRef = collection(db, "Users");
+
+                // Create a query to find matching username and password
+                const q = query(usersRef, where("Username", "==", username), where("Password", "==", password));
+
+                // Execute the query
+                const querySnapshot = await getDocs(q);
+
+                // Check if any matching documents were found
+                if (querySnapshot.empty) {
+                    alert("Login Failed: Invalid username or password.");
+                    return;
+                }
+
+                // If a match is found, show success message
+                // Store login state in sessionStorage
+                sessionStorage.setItem("isLoggedIn", "true");
+                alert("Login Successful!");
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 2000); // Redirect after 2 seconds
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

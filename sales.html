@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales - Jewelry Store</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Body Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            height: 100vh;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #ffffff, #f0e6ff); /* Gradient Background */
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Align items between logo and logout */
+            padding: 30px;
+            height: 100vh;
+        }
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .sidebar .logo img {
+            width: 100px; /* Larger Logo */
+            height: 100px;
+            margin-right: 15px;
+            border-radius: 10px; /* Rounded Corners for Logo */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 20px;
+        }
+        .sidebar nav ul li button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icon and text */
+        }
+        .sidebar nav ul li button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+        .sidebar nav ul li button svg {
+            width: 20px;
+            height: 20px;
+            fill: white; /* Icon color */
+        }
+        /* Indian Design SVG */
+        .indian-pattern {
+            margin-top: 20px;
+            opacity: 0.3; /* Subtle visibility */
+        }
+        .indian-pattern svg {
+            width: 100%;
+            height: auto;
+        }
+        /* Logout Button */
+        .logout-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            text-align: center;
+        }
+        .logout-button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+            border-radius: 15px; /* Rounded Corners */
+            margin: 20px;
+        }
+        .main-content h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        /* Sales Table Styling */
+        .sales-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .sales-table th, .sales-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .sales-table th {
+            background-color: #c70039;
+            color: white;
+        }
+        .sales-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        /* Nested Items Table Styling */
+        .nested-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .nested-table th, .nested-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+        .nested-table th {
+            background-color: #ff3a3a;
+        }
+        /* Responsive Table */
+        @media (max-width: 768px) {
+            .sales-table th, .sales-table td {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+         /* Controls Section */
+    .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .controls input,
+    .controls select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .controls input:focus,
+    .controls select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .controls select {
+        appearance: none; /* Remove default arrow */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='%23000' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px;
+        padding-right: 30px;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .main-content {
+        width: 90%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .controls {
+        margin-bottom: 15px;
+    }
+
+    input, select {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .actions {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    button {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        transition: 0.3s ease-in-out;
+    }
+
+    button:hover {
+        background: linear-gradient(135deg, #2E7D32, #1B5E20);
+        transform: scale(1.05);
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+
+    select {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        background-color: white;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background: #007bff;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+    
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="Logo.jpg" alt="Jewelry Store Logo">
+        </div>
+        <nav>
+            <ul>
+                <li>
+                    <button onclick="window.location.href='inventory.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V9h-2v2z"/>
+                        </svg>
+                        Inventory
+                    </button>
+                </li>
+                <li>
+                      <button onclick="window.location.href='sales.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM10 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM3 3h2l3.6 7.59L7.25 13.5C7.1 13.8 7 14.1 7 14.5c0 .83.67 1.5 1.5 1.5h9v-2h-8.22c-.08 0-.14-.02-.18-.06l.78-1.44H17c.76 0 1.41-.43 1.73-1.09L21 5H6.42l-.94-2H3z"/>
+                        </svg>
+                        Sales
+                    </button>
+                </li>
+                <li>
+                    <button onclick="window.location.href='billing.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M19 2h-4l-2 2-2-2H5c-1.1 0-2 .9-2 2v18l3-1.5L9 22l3-1.5L15 22l3-1.5 3 1.5V4c0-1.1-.9-2-2-2zM6 8h12v2H6V8zm0 4h8v2H6v-2zm0 4h12v2H6v-2z"/>
+                        </svg>
+                        Billing
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <!-- Indian Design SVG -->
+        <div class="indian-pattern">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <circle cx="20" cy="20" r="10" fill="#FFD700" />
+                <circle cx="60" cy="20" r="10" fill="#FFD700" />
+                <circle cx="100" cy="20" r="10" fill="#FFD700" />
+                <circle cx="140" cy="20" r="10" fill="#FFD700" />
+                <circle cx="180" cy="20" r="10" fill="#FFD700" />
+                <circle cx="20" cy="60" r="10" fill="#FFD700" />
+                <circle cx="60" cy="60" r="10" fill="#FFD700" />
+                <circle cx="100" cy="60" r="10" fill="#FFD700" />
+                <circle cx="140" cy="60" r="10" fill="#FFD700" />
+                <circle cx="180" cy="60" r="10" fill="#FFD700" />
+            </svg>
+        </div>
+        <!-- Logout Button -->
+        <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Sales</h1>
+    
+        <!-- Search and Filter Controls -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search by Customer Name...">
+            <select id="paymentMethodFilter" style="display:none;">
+                <option value="all">All Payment Methods</option>
+                <option value="cash">Cash</option>
+                <option value="upi">UPI</option>
+            </select>
+        </div>
+    
+        <!-- Export and Sorting Controls -->
+        <div class="actions">
+            <button id="exportPdf">
+                <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="PDF" class="icon"> Export to PDF
+            </button>
+            <button id="exportExcel">
+                <img src="https://cdn-icons-png.flaticon.com/512/732/732220.png" alt="Excel" class="icon"> Export to Excel
+            </button>
+    
+            <select id="sortSales">
+                <option value="newest">Sort by Newest</option>
+                <option value="highest">Highest Sale</option>
+                <option value="lowest">Lowest Sale</option>
+            </select>
+        </div>
+    
+        <!-- Sales Table -->
+        <table class="sales-table" id="salesTable">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Payment Method</th>
+                    <th>Total Amount (₹)</th>
+                    <th>Sold At</th>
+                </tr>
+            </thead>
+            <tbody id="salesItems">
+                <!-- Sales records will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        // Import Firestore modules from firebase.js
+        import { db, collection, getDocs } from './firebase.js';
+
+        let allSalesData = []; // To store all fetched sales data
+
+        // Function to fetch sales data from Firestore
+        async function fetchSales() {
+            try {
+                const salesRef = collection(db, "sales");
+                const querySnapshot = await getDocs(salesRef);
+
+                if (querySnapshot.empty) {
+                    console.log("No sales records found.");
+                    document.getElementById("salesItems").innerHTML = "<tr><td colspan='4'>No sales records available.</td></tr>";
+                    return;
+                }
+
+                const salesContainer = document.getElementById("salesItems");
+                salesContainer.innerHTML = ""; // Clear existing rows
+
+                allSalesData = []; // Reset the data array
+
+                querySnapshot.forEach((doc) => {
+                    const saleData = doc.data();
+                    const customerName = saleData.customerName || "-";
+                    const paymentMethod = saleData.paymentMethod || "-";
+                    const soldAt = saleData.soldAt?.toDate().toLocaleString() || "-";
+                    const includeGST = saleData.includeGST || false;
+
+                    // Calculate total amount based on GST inclusion
+                    const totalAmount = includeGST
+                        ? saleData.totalAmount.toFixed(2)
+                        : saleData.items.reduce(
+                              (sum, item) => sum + (item.totalPriceWithoutGST || 0),
+                              0
+                          ).toFixed(2);
+
+                    // Add the sale data to the array
+                    allSalesData.push({
+                        customerName,
+                        paymentMethod,
+                        totalAmount,
+                        soldAt,
+                        items: saleData.items,
+                        includeGST
+                    });
+
+                    // Create the main row for the customer
+                    const mainRow = `
+                        <tr>
+                            <td rowspan="2">${customerName}</td>
+                            <td>${paymentMethod}</td>
+                            <td>${totalAmount}</td>
+                            <td>${soldAt}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <table class="nested-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Item Type</th>
+                                            <th>Quantity</th>
+                                            <th>Price Per Unit (₹)</th>
+                                            <th>CGST (₹)</th>
+                                            <th>SGST (₹)</th>
+                                            <th>Total Price ${includeGST ? "With GST" : "Without GST"} (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${saleData.items.map(item => `
+                                            <tr>
+                                                <td>${item.itemName || "-"}</td>
+                                                <td>${item.itemType || "-"}</td>
+                                                <td>${item.quantity || 0}</td>
+                                                <td>${(item.pricePerUnit || 0).toFixed(2)}</td>
+                                                <td>${(item.cgst || 0).toFixed(2)}</td>
+                                                <td>${(item.sgst || 0).toFixed(2)}</td>
+                                                <td>${includeGST
+                                                    ? (item.totalPriceWithGST || 0).toFixed(2)
+                                                    : (item.totalPriceWithoutGST || 0).toFixed(2)}</td>
+                                            </tr>
+                                        `).join("")}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    `;
+                    salesContainer.innerHTML += mainRow;
+                });
+            } catch (error) {
+                console.error("Error fetching sales: ", error);
+                alert("Failed to fetch sales data.");
+            }
+        }
+
+        // Search Functionality
+function filterSales() {
+    const searchInput = document.getElementById("searchInput").value.toLowerCase();
+    const paymentMethodFilter = document.getElementById("paymentMethodFilter").value;
+
+    const salesContainer = document.getElementById("salesItems");
+    salesContainer.innerHTML = ""; // Clear existing rows
+
+    allSalesData.forEach(sale => {
+        const matchesSearch = sale.customerName.toLowerCase().includes(searchInput);
+        const matchesPaymentMethod = paymentMethodFilter === "all" || sale.paymentMethod === paymentMethodFilter;
+
+        if (matchesSearch && matchesPaymentMethod) {
+            const includeGST = sale.includeGST;
+            const mainRow = `
+                <tr>
+                    <td rowspan="2">${sale.customerName}</td>
+                    <td>${sale.paymentMethod}</td>
+                    <td>${sale.totalAmount}</td>
+                    <td>${sale.soldAt}</td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <table class="nested-table">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Item Type</th> 
+                                    <th>HSN</th> 
+                                    <th>Quantity</th>
+                                    <th>Price Per Unit (₹)</th>
+                                    <th>CGST (₹)</th>
+                                    <th>SGST (₹)</th>
+                                    <th>Making Charges (%)</th>
+                                    <th>Purity (%)</th>
+                                    <th>Total Price ${includeGST ? "With GST" : "Without GST"} (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sale.items.map(item => `
+                                    <tr>
+                                        <td>${item.itemName || "-"}</td>
+                                        <td>${item.itemType || "-"}</td>
+                                        <td>${item.HSN || "-"}</td>
+                                        <td>${item.quantity || 0}</td>
+                                        <td>${(item.pricePerUnit || 0).toFixed(2)}</td>
+                                        <td>${(item.cgst || 0).toFixed(2)}</td>
+                                        <td>${(item.sgst || 0).toFixed(2)}</td>
+                                        <td>${item.makingChargesPercentage}</td>
+                                        <td>${item.purity}</td>
+                                        <td>${includeGST
+                                            ? (item.totalPriceWithGST || 0).toFixed(2)
+                                            : (item.totalPriceWithoutGST || 0).toFixed(2)}</td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            `;
+            salesContainer.innerHTML += mainRow;
+        }
+    });
+}
+
+// Attach Event Listeners Programmatically
+document.addEventListener("DOMContentLoaded", () => {
+    // Fetch sales data when the page loads
+    fetchSales();
+
+    // Attach search input event listener
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", filterSales); // Use "input" for real-time filtering
+    }
+
+    // Attach payment method filter event listener
+    const paymentMethodFilter = document.getElementById("paymentMethodFilter");
+    if (paymentMethodFilter) {
+        paymentMethodFilter.addEventListener("change", filterSales);
+    }
+});
+
+if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        // Redirect to login page if not logged in
+        window.location.href = "index.html";
+    }
+
+    </script>
+</body>
+</html>

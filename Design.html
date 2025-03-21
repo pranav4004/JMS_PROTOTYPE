@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewellery Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mukta:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            background-color: #f5f5dc; /* Ivory background */
+            color: #333; /* Dark text */
+            line-height: 1.6; /* Adjust line height for spacing */
+        }
+        /* Header Section */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(135deg, #b22222, #8b0000); /* Rich red gradient */
+            color: #ffd700; /* Gold text */
+            position: relative;
+        }
+        /* Logo on the Left */
+        .logo img {
+            width: 150px;
+            height: 130px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* Title in the Center */
+        .title {
+            text-align: center;
+            flex-grow: 1;
+            font-family: "Great Vibes", cursive;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .title h5 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700; /* Gold color for "Shree Ji" */
+            letter-spacing: 1px;
+            padding-left: 60px;
+        }
+        .title h1 {
+            margin: 0;
+            font-size: 48px;
+            color: #fff308; /* Gold color for "Madan Jewellers" */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            padding-left: 60px;
+        }
+        /* Contact on the Right */
+        .contact {
+            text-align: center; /* Centered text */
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffd700; /* Gold text */
+            line-height: 1.5;
+        }
+        /* Body Section */
+        .content {
+            padding: 30px;
+            background-color: #fff8e1; /* Light peach background */
+            color: #8b0000; /* Deep red text for contrast */
+        }
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #8b0000; /* Deep red borders */
+            padding: 10px; /* Reduced padding for compactness */
+            text-align: left; /* Align text to the left */
+        }
+        th {
+            background-color: #b22222; /* Rich red background */
+            color: #ffd700; /* Gold text */
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #ffe4e1; /* Light peach for even rows */
+        }
+        /* Summary Table Styling */
+        .summary-table {
+            width: 400px;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+        .summary-table th,
+        .summary-table td {
+            border: 1px solid #8b0000; /* Add borders */
+            padding: 8px; /* Compact padding */
+            text-align: left; /* Align text to the left */
+        }
+        .summary-table td:first-child {
+            font-weight: bold; /* Bold labels */
+            color: #8b0000; /* Deep red for emphasis */
+        }
+        /* Customer Details Table Styling */
+        .customer-details-table {
+            width: 600px;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+            margin-right: 20px;
+        }
+        .customer-details-table th,
+        .customer-details-table td {
+            border: 1px solid #8b0000; /* Add borders */
+            padding: 8px; /* Compact padding */
+            text-align: left; /* Align text to the left */
+        }
+        .customer-details-table td:first-child {
+            font-weight: bold; /* Bold labels */
+            color: #8b0000; /* Deep red for emphasis */
+        }
+        /* Flex Container for Tables */
+        .table-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        /* Footer Section */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #8b0000, #b22222); /* Deep red gradient */
+            color: #ffd700; /* Gold text */
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <!-- Logo on the Left -->
+        <div class="logo">
+            <img src="Logobg.png" alt="Logo">
+        </div>
+        <!-- Title in the Center -->
+        <div class="title">
+            <div>
+                <h5>Shree Devji</h5>
+                <h1>Madan Jewellers</h1>
+            </div>
+        </div>
+        <!-- Contact on the Right -->
+        <div class="contact">
+            <p>Cell: +91 9844215003</p>
+            <p>Address: 2, Viviani Rd, Frazer Town, Bengaluru</p>
+        </div>
+    </div>
+    <!-- Content Section -->
+    <div class="content">
+        <h2 style="text-align: center; margin-bottom: 20px;">Invoice Details</h2>
+
+        <!-- Flex Container for Tables -->
+        <div class="table-container">
+            <!-- Customer Details Table -->
+            <table class="customer-details-table">
+                <tbody>
+                    <tr>
+                        <td>Customer Name</td>
+                        <td>John Doe</td>
+                    </tr>
+                    <tr>
+                        <td>Customer Phone</td>
+                        <td>+91 9876543210</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Sale</td>
+                        <td>2025-02-03</td>
+                    </tr>
+                    <tr>
+                        <td>Total Amount (in Words)</td>
+                        <td>One Lakh Eight Thousand Nine Hundred Rupees Only</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Summary Table 2 -->
+            <table class="summary-table">
+                <tbody>
+                    <tr>
+                        <td>BILL NO:</td>
+                        <td>12345</td>
+                    </tr>
+                    <tr>
+                        <td>DATE:</td>
+                        <td>2025-02-03</td>
+                    </tr>
+                    <tr>
+                        <td>PAN NO:</td>
+                        <td>ABCDE1234F</td>
+                    </tr>
+                    <tr>
+                        <td>ORD DATE:</td>
+                        <td>2025-02-01</td>
+                    </tr>
+                    <tr>
+                        <td>GSTIN:</td>
+                        <td>29ABCDE1234F1Z5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Main Billing Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    <th>Description of Goods</th>
+                    <th>HSN</th>
+                    <th>Quantity</th>
+                    <th>Purity</th>
+                    <th>Price Per Unit (₹)</th>
+                    <th>SGST (%)</th>
+                    <th>CGST (%)</th>
+                    <th>Making Charge (₹)</th>
+                    <th>Total Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Gold Necklace</td>
+                    <td>711311</td>
+                    <td>1</td>
+                    <td>24K</td>
+                    <td>50,000</td>
+                    <td>1.5%</td>
+                    <td>1.5%</td>
+                    <td>1,000</td>
+                    <td>52,500</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Silver Bracelet</td>
+                    <td>711411</td>
+                    <td>2</td>
+                    <td>92.5</td>
+                    <td>2,500</td>
+                    <td>1.5%</td>
+                    <td>1.5%</td>
+                    <td>200</td>
+                    <td>5,400</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Diamond Ring</td>
+                    <td>711620</td>
+                    <td>1</td>
+                    <td>18K</td>
+                    <td>1,00,000</td>
+                    <td>1.5%</td>
+                    <td>1.5%</td>
+                    <td>3,000</td>
+                    <td>1,06,000</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Second Table -->
+        <table class="summary-table">
+            <tbody>
+                <tr>
+                    <td>SGST</td>
+                    <td>₹ 1,000</td>
+                </tr>
+                <tr>
+                    <td>CGST</td>
+                    <td>₹ 1,000</td>
+                </tr>
+                <tr>
+                    <td>Total Amount</td>
+                    <td>₹ 1,08,900</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>We cherish your presence. Visit us again for exquisite jewellery.</p>
+    </div>
+</body>
+</html>

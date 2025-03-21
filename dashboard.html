@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Jewelry Store</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #ffffff, #f0e6ff); /* Gradient Background */
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Align items between logo and logout */
+            padding: 30px;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .logo img {
+            width: 100px; /* Larger Logo */
+            height: 100px;
+            margin-right: 15px;
+            border-radius: 10px; /* Rounded Corners for Logo */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav ul li button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icon and text */
+        }
+
+        .sidebar nav ul li button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+
+        .sidebar nav ul li button svg {
+            width: 20px;
+            height: 20px;
+            fill: white; /* Icon color */
+        }
+
+        /* Indian Design SVG */
+        .indian-pattern {
+            margin-top: 20px;
+            opacity: 0.3; /* Subtle visibility */
+        }
+
+        .indian-pattern svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Logout Button */
+        .logout-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            text-align: center;
+        }
+
+        .logout-button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+            border-radius: 15px; /* Rounded Corners */
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-content h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .main-content .cards {
+            display: flex;
+            gap: 20px; /* Space between cards */
+        }
+
+        .main-content .card {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #c70039, #a3002f); /* Gradient Background */
+            border-radius: 15px; /* Rounded Corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .main-content .card:hover {
+            transform: scale(1.05); /* Enlarge card on hover */
+        }
+
+        .main-content .card svg {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 15px;
+            fill: white; /* Icon color */
+        }
+
+        .main-content .card h2 {
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="Logo.jpg" alt="Jewelry Store Logo">
+        </div>
+        <nav>
+            <ul>
+                <li>
+                    <button onclick="window.location.href='inventory.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V9h-2v2z"/>
+                        </svg>
+                        Inventory
+                    </button>
+                </li>
+                <li>
+                    <button onclick="window.location.href='sales.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM3 3h2l3.6 7.59L7.25 13.5C7.1 13.8 7 14.1 7 14.5c0 .83.67 1.5 1.5 1.5h9v-2h-8.22c-.08 0-.14-.02-.18-.06l.78-1.44H17c.76 0 1.41-.43 1.73-1.09L21 5H6.42l-.94-2H3z"/>
+                        </svg>
+                        Sales
+                    </button>
+                </li>
+                <!-- Billing Button -->
+                <li>
+                    <button onclick="window.location.href='billing.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M19 2h-4l-2 2-2-2H5c-1.1 0-2 .9-2 2v18l3-1.5L9 22l3-1.5L15 22l3-1.5 3 1.5V4c0-1.1-.9-2-2-2zM6 8h12v2H6V8zm0 4h8v2H6v-2zm0 4h12v2H6v-2z"/>
+                        </svg>
+                        Billing
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Indian Design SVG -->
+        <div class="indian-pattern">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <circle cx="20" cy="20" r="10" fill="#FFD700" />
+                <circle cx="60" cy="20" r="10" fill="#FFD700" />
+                <circle cx="100" cy="20" r="10" fill="#FFD700" />
+                <circle cx="140" cy="20" r="10" fill="#FFD700" />
+                <circle cx="180" cy="20" r="10" fill="#FFD700" />
+                <circle cx="20" cy="60" r="10" fill="#FFD700" />
+                <circle cx="60" cy="60" r="10" fill="#FFD700" />
+                <circle cx="100" cy="60" r="10" fill="#FFD700" />
+                <circle cx="140" cy="60" r="10" fill="#FFD700" />
+                <circle cx="180" cy="60" r="10" fill="#FFD700" />
+            </svg>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Welcome to the Dashboard</h1>
+        <div class="cards">
+            <a href="inventory.html" class="card">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V9h-2v2z"/>
+                </svg>
+                <h2>Inventory</h2>
+            </a>
+            <a href="sales.html" class="card">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                    <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM3 3h2l3.6 7.59L7.25 13.5C7.1 13.8 7 14.1 7 14.5c0 .83.67 1.5 1.5 1.5h9v-2h-8.22c-.08 0-.14-.02-.18-.06l.78-1.44H17c.76 0 1.41-.43 1.73-1.09L21 5H6.42l-.94-2H3z"/>
+                </svg>
+                
+                             
+                <h2>Sales</h2>
+            </a>
+            <a href="billing.html" class="card">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                    <path d="M19 2h-4l-2 2-2-2H5c-1.1 0-2 .9-2 2v18l3-1.5L9 22l3-1.5L15 22l3-1.5 3 1.5V4c0-1.1-.9-2-2-2zM6 8h12v2H6V8zm0 4h8v2H6v-2zm0 4h12v2H6v-2z"/>
+                </svg>
+                
+                <h2>Billing</h2>
+            </a>
+        </div>
+
+       <!-- Footer with Copyright Notice -->
+    <footer style="text-align: center; font-size: 12px; color: #555; margin-top: 20px;">
+        &copy; <span id="currentYear"></span> Pranav and Ikram. All rights reserved.
+    </footer>
+    </div>
+
+    <script>
+          if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        // Redirect to login page if not logged in
+        window.location.href = "index.HTML"
+        }
+    </script>
+</body>
+</html>

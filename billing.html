@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>Billing - Jewelry Store</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Body Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            height: 100vh;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #ffffff, #f0e6ff); /* Gradient Background */
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Align items between logo and logout */
+            padding: 30px;
+            height: 100vh;
+        }
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .sidebar .logo img {
+            width: 100px; /* Larger Logo */
+            height: 100px;
+            margin-right: 15px;
+            border-radius: 10px; /* Rounded Corners for Logo */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 20px;
+        }
+        .sidebar nav ul li button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icon and text */
+        }
+        .sidebar nav ul li button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+        .sidebar nav ul li button svg {
+            width: 20px;
+            height: 20px;
+            fill: white; /* Icon color */
+        }
+        /* Indian Design SVG */
+        .indian-pattern {
+            margin-top: 20px;
+            opacity: 0.3; /* Subtle visibility */
+        }
+        .indian-pattern svg {
+            width: 100%;
+            height: auto;
+        }
+        /* Logout Button */
+        .logout-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 10px; /* Rounded Buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button Shadow */
+            text-align: center;
+        }
+        .logout-button:hover {
+            background-color: #a3002f; /* Darker Red on Hover */
+            transform: translateY(-2px); /* Slight Lift Effect */
+        }
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle Shadow */
+            border-radius: 15px; /* Rounded Corners */
+            margin: 20px;
+        }
+        .main-content h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        /* Form Styling */
+        .billing-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .billing-form input, .billing-form select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .billing-form button {
+            grid-column: span 2;
+            padding: 10px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #c70039;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .billing-form button:hover {
+            background-color: #a3002f;
+        }
+        /* Cart Table Styling */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .cart-table th, .cart-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .cart-table th {
+            background-color: #c70039;
+            color: white;
+        }
+        
+        .cart-table button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cart-table button:hover {
+            background-color: #da190b;
+        }
+        /* Suggestions Dropdown Styling */
+        #itemSuggestions {
+            position: absolute;
+            z-index: 1000;
+            background-color: rgb(214, 214, 214);
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 550px;
+            margin-top: 40px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #itemSuggestions div {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #itemSuggestions div:hover {
+            background-color: #f0f0f0;
+        }
+       
+    
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="Logo.jpg" alt="Jewelry Store Logo">
+        </div>
+        <nav>
+            <ul>
+                <li>
+                    <!-- <button onclick="window.location.href='inventory.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V9h-2v2z"/>
+                        </svg>
+                        Inventory
+                    </button> -->
+                </li>
+                <li>
+                      <button onclick="window.location.href='sales.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM3 3h2l3.6 7.59L7.25 13.5C7.1 13.8 7 14.1 7 14.5c0 .83.67 1.5 1.5 1.5h9v-2h-8.22c-.08 0-.14-.02-.18-.06l.78-1.44H17c.76 0 1.41-.43 1.73-1.09L21 5H6.42l-.94-2H3z"/>
+                        </svg>
+                        Sales
+                    </button>
+                </li>
+                <li>
+                    <button onclick="window.location.href='billing.html'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+                            <path d="M19 2h-4l-2 2-2-2H5c-1.1 0-2 .9-2 2v18l3-1.5L9 22l3-1.5L15 22l3-1.5 3 1.5V4c0-1.1-.9-2-2-2zM6 8h12v2H6V8zm0 4h8v2H6v-2zm0 4h12v2H6v-2z"/>
+                        </svg>
+                        Billing
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <!-- Indian Design SVG -->
+        <div class="indian-pattern">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <circle cx="20" cy="20" r="10" fill="#FFD700" />
+                <circle cx="60" cy="20" r="10" fill="#FFD700" />
+                <circle cx="100" cy="20" r="10" fill="#FFD700" />
+                <circle cx="140" cy="20" r="10" fill="#FFD700" />
+                <circle cx="180" cy="20" r="10" fill="#FFD700" />
+                <circle cx="20" cy="60" r="10" fill="#FFD700" />
+                <circle cx="60" cy="60" r="10" fill="#FFD700" />
+                <circle cx="100" cy="60" r="10" fill="#FFD700" />
+                <circle cx="140" cy="60" r="10" fill="#FFD700" />
+                <circle cx="180" cy="60" r="10" fill="#FFD700" />
+            </svg>
+        </div>
+        <!-- Logout Button -->
+        <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Billing</h1>
+        <form class="billing-form" id="billingForm">
+            <input type="text" id="itemName" placeholder="Item Name" required>
+            <div id="itemSuggestions"></div> <!-- Dropdown container -->
+            <input type="number" id="quantity" placeholder="Quantity" required>
+            <input type="number" id="GoldRate" placeholder="Gold Rate" required>
+            
+            <button type="button" id="addItemButton">Add Item</button>
+        </form>
+        <h2>Cart</h2>
+        <table class="cart-table" id="cartTable">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Purity</th>
+                    <th>HSN</th>
+                    <th>Quantity</th>
+                    <th>Net Weight</th>
+                    <th>Gross Weight</th>
+                    <th>Making Charges (%)</th>
+                    <th>Gold <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>(₹)</th>
+                    <th>Total Price (₹)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="cartItems">
+                <!-- Cart items will be dynamically populated here -->
+            </tbody>
+        </table>
+        <form class="billing-form" id="finalizeSaleForm">
+            <select id="includeGST">
+                <option value="true">Include GST</option>
+                <option value="false">Exclude GST</option>
+            </select>
+            <input type="text" id="customerName" placeholder="Customer Name" required>
+            <input type="text" id="customerPhone" placeholder="Customer Phone" required>
+            <input type="text" id="Cash" placeholder="Cash" > 
+            <input type="text" id="Upi" placeholder="Upi" > 
+            <input type="text" id="OldGoldReturn" placeholder="Old Gold Return" > 
+            <input type="text" id="BilledBy" placeholder="Billed By" required > 
+            <input type="text" id="SilverRate" placeholder="Enter Silver Rate " required> 
+            
+            <select id="paymentMethod">
+                <option value="Cash">Cash</option>
+                <option value="UPI">UPI</option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    
+    <script type="module">
+        // Import Firestore modules from firebase.js
+        import { db, collection, getDocs,addDoc,doc,updateDoc,deleteDoc,query,where,Timestamp  } from './firebase.js';
+
+        // Temporary cart to store items
+        const cart = [];
+
+        // Function to fetch matching items from inventory based on user input
+        async function fetchMatchingItems(searchTerm) {
+            try {
+                const inventoryRef = collection(db, "inventory");
+                const q = query(inventoryRef, where("item", ">=", searchTerm), where("item", "<=", searchTerm + "\uf8ff"));
+                const querySnapshot = await getDocs(q);
+                const items = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    items.push(data.item); // Extract item names
+                });
+                return items;
+            } catch (error) {
+                console.error("Error fetching matching items: ", error);
+                alert("Failed to fetch matching items.");
+                return [];
+            }
+        }
+
+        // Function to populate the suggestions dropdown
+        async function populateItemSuggestions() {
+            const itemNameInput = document.getElementById("itemName");
+            const itemSuggestions = document.getElementById("itemSuggestions");
+            itemSuggestions.innerHTML = "";
+            const searchTerm = itemNameInput.value.trim();
+            if (searchTerm.length > 0) {
+                const items = await fetchMatchingItems(searchTerm);
+                items.forEach((item) => {
+                    const suggestionDiv = document.createElement("div");
+                    suggestionDiv.textContent = item;
+                    suggestionDiv.onclick = () => {
+                        itemNameInput.value = item;
+                        itemSuggestions.innerHTML = "";
+                    };
+                    itemSuggestions.appendChild(suggestionDiv);
+                });
+            }
+        }
+
+        // Function to fetch item details from inventory
+        async function fetchItemDetails(itemName) {
+            try {
+                const inventoryRef = collection(db, "inventory");
+                const q = query(inventoryRef, where("item", "==", itemName));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    alert("Item not found in inventory.");
+                    return null;
+                }
+                const itemData = querySnapshot.docs[0].data();
+                return itemData;
+            } catch (error) {
+                console.error("Error fetching item details: ", error);
+                alert("Failed to fetch item details.");
+                return null;
+            }
+        }
+
+        // Handle "Add Item" button click
+        // Handle "Add Item" button click
+  // Handle "Add Item" button click
+  document.getElementById("addItemButton").addEventListener("click", async () => {
+        const itemName = document.getElementById("itemName").value.trim();
+        const quantity = parseFloat(document.getElementById("quantity").value);
+        const goldRate = parseFloat(document.getElementById("GoldRate").value);
+
+        if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(goldRate) || goldRate <= 0) {
+            alert("Please enter valid item name, quantity, and gold rate.");
+            return;
+        }
+
+        const itemDetails = await fetchItemDetails(itemName);
+        if (!itemDetails) return;
+
+        const newItem = {
+            itemName,
+            itemType: parseFloat(itemDetails.itemType), // Purity (e.g., 22 for 22K)
+            HSN: itemDetails.HSN,
+            quantity,
+            netWeight: 0,
+            grossWeight: 0,
+            makingChargesPercentage: 0,
+            goldRate,
+            totalPrice: 0
+        };
+
+        cart.push(newItem);
+        renderCart();
+        document.getElementById("billingForm").reset();
+    });
+
+    // Calculate Total Price
+    function calculateTotalPrice(item) {
+        const baseTotalPrice = (item.itemType / 100) * item.netWeight * item.goldRate;
+        const makingCharges = (baseTotalPrice * item.makingChargesPercentage) / 100;
+        item.totalPrice = baseTotalPrice + makingCharges;
+    }
+
+    // Render Cart
+    function renderCart() {
+            const cartItemsContainer = document.getElementById("cartItems");
+            cartItemsContainer.innerHTML = "";
+
+            cart.forEach((item, index) => {
+                const netWeightInput = document.createElement("input");
+                netWeightInput.type = "number";
+                netWeightInput.step = "0.01";
+                netWeightInput.value = item.netWeight;
+                netWeightInput.placeholder = "Net Wt";
+                netWeightInput.onblur = (e) => {
+                    const rawValue = e.target.value.trim();
+                    const isValid = /^(\d+\.?\d*|\.\d+)$/.test(rawValue);
+                    if (isValid) {
+                        item.netWeight = parseFloat(rawValue);
+                        calculateTotalPrice(item);
+                        renderCart();
+                    } else {
+                        netWeightInput.value = item.netWeight;
+                    }
+                };
+
+                const grossWeightInput = document.createElement("input");
+                grossWeightInput.type = "number";
+                grossWeightInput.step = "0.01";
+                grossWeightInput.value = item.grossWeight;
+                grossWeightInput.placeholder = "Gross Wt";
+                grossWeightInput.oninput = (e) => {
+                    item.grossWeight = parseFloat(e.target.value) || 0;
+                };
+
+                const makingChargesInput = document.createElement("input");
+                makingChargesInput.type = "number";
+                makingChargesInput.step = "0.01";
+                makingChargesInput.value = item.makingChargesPercentage;
+                makingChargesInput.placeholder = "Making %";
+                makingChargesInput.onblur = (e) => {
+                    const rawValue = e.target.value.trim();
+                    const isValid = /^(\d+\.?\d*|\.\d+)$/.test(rawValue);
+                    if (isValid) {
+                        item.makingChargesPercentage = parseFloat(rawValue);
+                        calculateTotalPrice(item);
+                        renderCart();
+                    } else {
+                        makingChargesInput.value = item.makingChargesPercentage;
+                    }
+                };
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.itemName}</td>
+                    <td>${item.itemType}</td>
+                    <td>${item.HSN}</td>
+                    <td>${item.quantity}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>₹${item.goldRate.toFixed(2)}</td>
+                    <td>₹${item.totalPrice.toFixed(2)}</td>
+                    <td><button onclick="removeItemFromCart(${index})">Remove</button></td>
+                `;
+
+                row.cells[4].appendChild(netWeightInput);
+                row.cells[5].appendChild(grossWeightInput);
+                row.cells[6].appendChild(makingChargesInput);
+
+                cartItemsContainer.appendChild(row);
+            });
+        }
+
+
+    // Remove Item from Cart
+    window.removeItemFromCart = function (index) {
+        cart.splice(index, 1);
+        renderCart();
+    };
+
+    // Function to convert numbers to words (for displaying amount in words)
+        function numberToWords(num) {
+            const ones = [
+                "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+            ];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+            if (num < 20) return ones[num];
+            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "");
+            if (num < 1000) return ones[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " " + numberToWords(num % 100) : "");
+            if (num < 100000) return numberToWords(Math.floor(num / 1000)) + " Thousand" + (num % 1000 ? " " + numberToWords(num % 1000) : "");
+            if (num < 10000000) return numberToWords(Math.floor(num / 100000)) + " Lakh" + (num % 100000 ? " " + numberToWords(num % 100000) : "");
+            return numberToWords(Math.floor(num / 10000000)) + " Crore" + (num % 10000000 ? " " + numberToWords(num % 10000000) : "");
+        }
+    
+        // Function to generate the invoice
+        
+        
+        function generateInvoice(customerName, customerPhone, customerEmail, paymentMethod, itemsForSale, totalAmount, includeGST,cashAmount,upiAmount,oldGoldReturnAmount,BilledBy,silverRate,GoldRate) {
+    // Create a new container for the invoice
+    const invoiceContainer = document.createElement("div");
+    invoiceContainer.id = "invoice";
+    invoiceContainer.style.position = "fixed";
+    invoiceContainer.style.top = "0";
+    invoiceContainer.style.left = "0";
+    invoiceContainer.style.width = "100%";
+    invoiceContainer.style.height = "100%";
+    invoiceContainer.style.backgroundColor = "#FFFFFF"; // Ivory background
+    invoiceContainer.style.zIndex = "1000";
+    invoiceContainer.style.overflowY = "auto";
+    invoiceContainer.style.padding = "10px";
+    invoiceContainer.style.overflowX = "hidden";
+
+
+    // Header Section
+    const headerSection = document.createElement("div");
+    headerSection.style.display = "flex";
+    headerSection.style.alignItems = "center";
+    headerSection.style.justifyContent = "space-between";
+    headerSection.style.padding = "20px";
+    headerSection.style.background = "linear-gradient(135deg, #c9ae79, #a07e4a)";
+    headerSection.style.color = "#FFFFFF"; // Gold text
+    headerSection.style.position = "relative";
+    headerSection.style.marginBottom = "20px";
+
+    
+    const logo = document.createElement("img");
+    logo.src = "Logobg.png";
+    logo.style.width = "150px";
+    logo.style.height = "130px";
+    logo.style.borderRadius = "10px";
+    logo.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.2)";
+    headerSection.appendChild(logo);
+
+    // Center: Shree Devji and Madan Jewellers
+    const centerHeader = document.createElement("div");
+    centerHeader.style.textAlign = "center";
+    centerHeader.style.flexGrow = "1";
+    centerHeader.style.fontFamily="Montessarat"
+    centerHeader.style.marginTop="55px"
+    centerHeader.style.display = "flex";
+    centerHeader.style.alignItems = "center";
+    centerHeader.style.justifyContent = "center";
+    centerHeader.style.paddingLeft = "60px";
+
+    
+centerHeader.style.textAlign = "center";  // Center align the text
+centerHeader.style.display = "flex";
+centerHeader.style.flexDirection = "column"; // Stack elements vertically
+centerHeader.style.alignItems = "center"; // Ensure both are aligned centrally
+
+const shreeDevji = document.createElement("h5");
+shreeDevji.textContent = "SHREE DEVJI";
+shreeDevji.style.fontSize = "10px";  // Make it slightly bigger for better visibility
+shreeDevji.style.margin = "0"; 
+shreeDevji.style.color = "#FFFFFF";  
+shreeDevji.style.fontWeight = "bold";
+shreeDevji.style.letterSpacing = "1px";
+shreeDevji.style.display = "block"; // Ensure it appears above h1
+centerHeader.appendChild(shreeDevji);
+
+const madanJewellers = document.createElement("h1");
+madanJewellers.textContent = "Madan Jewellers";
+madanJewellers.style.fontSize = "30px";  // Adjust font size
+madanJewellers.style.margin = "0";  
+madanJewellers.style.color = "#FFFFFF";  
+madanJewellers.style.letterSpacing = "2px";
+madanJewellers.style.textShadow = "2px 2px 4px rgba(0, 0, 0, 0.3)";
+madanJewellers.style.display = "block"; // Ensure it appears below h5
+centerHeader.appendChild(madanJewellers);
+
+// Address below the store name
+const address = document.createElement("p");
+address.textContent = "2, Viviani Rd, Frazer Town, Bengaluru";
+address.style.fontSize = "14px";
+address.style.margin = "50px 0 0 0";  // Add a slight margin for spacing
+address.style.color = "#FFFFFF";  
+address.style.letterSpacing = "1px";
+centerHeader.appendChild(address);
+
+
+//GST TEXT
+const GSTIN = document.createElement("p");
+GSTIN.textContent = "GSTIN:29AB0PB0783E1Z0";
+GSTIN.style.fontSize = "10px";
+GSTIN.style.color = "#FFFFFF";  
+GSTIN.style.letterSpacing = "1px";
+GSTIN.style.textAlign = "right";  // Align text to the right
+GSTIN.style.display = "flex";
+GSTIN.style.position = "absolute"; // Absolute position 
+GSTIN.style.justifyContent = "flex-end";  
+GSTIN.style.left = "630px"; 
+GSTIN.style.top = "170px"; 
+centerHeader.appendChild(GSTIN);
+
+
+
+    headerSection.appendChild(centerHeader);
+
+    // Right Side: Contact Details
+    const rightHeader = document.createElement("div");
+    rightHeader.style.textAlign = "center";
+    rightHeader.style.fontSize = "13px";
+    rightHeader.style.fontWeight = "bold";
+    rightHeader.style.color = "#FFFFFF"; // Gold text
+    // rightHeader.style.lineHeight = "1.5";
+    rightHeader.style.marginTop = "-80px";
+    rightHeader.innerHTML = `
+        <p>Cell: +91 9844215003</p>
+        <p>      +91 9535528744</p>
+    `;
+    headerSection.appendChild(rightHeader);
+    invoiceContainer.appendChild(headerSection);
+
+    // Invoice Title
+    const title = document.createElement("h1");
+    title.textContent = "Invoice";
+    title.style.textAlign = "center";
+    title.style.marginBottom = "10px";
+    title.style.color = "#c70039";
+    invoiceContainer.appendChild(title);
+
+    // Flex Container for Tables
+    const tableContainer = document.createElement("div");
+    tableContainer.style.display = "flex";
+    tableContainer.style.justifyContent = "space-between";
+    tableContainer.style.marginBottom = "20px";
+
+// Customer Details Table (Highly Compact)
+const customerDetailsTable = document.createElement("table");
+customerDetailsTable.style.width = "200px"; // Let content define width
+customerDetailsTable.style.textAlign = "center"; // Let content define width
+customerDetailsTable.style.borderCollapse = "collapse";
+customerDetailsTable.style.fontSize = "14px"; // Keep readable
+customerDetailsTable.style.marginRight = "auto";
+
+customerDetailsTable.innerHTML = `
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; font-weight: bold; color: #8b0000; white-space: nowrap;">Customer Name</td>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; white-space: nowrap;">${customerName}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; font-weight: bold; color: #8b0000; white-space: nowrap;">Customer Phone</td>
+        <td style="border: 1px solid #8b0000; padding: 1px 4px; white-space: nowrap;">${customerPhone}</td>
+    </tr>
+`;
+tableContainer.appendChild(customerDetailsTable);
+
+    // Summary Table
+    const summaryTable = document.createElement("table");
+    summaryTable.style.width = "400px";
+    summaryTable.style.borderCollapse = "collapse";
+    summaryTable.style.fontSize = "14px";
+    summaryTable.style.marginLeft = "auto";
+
+    summaryTable.innerHTML = `
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">Date</td>
+            <td style="border: 1px solid #8b0000; padding: 8px;">${new Date().toLocaleDateString()}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">GOLD 24K:</td>
+            <td style="border: 1px solid #8b0000; padding: 8px;">${itemsForSale[0].goldRate}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">Silver 999:</td>
+            <td style="border: 1px solid #8b0000; padding: 8px;">${silverRate} </td>
+        </tr>
+    `;
+    tableContainer.appendChild(summaryTable);
+
+    invoiceContainer.appendChild(tableContainer);
+
+   // Table for Items
+const table = document.createElement("table");
+table.style.width = "100%";
+table.style.borderCollapse = "collapse";
+table.style.marginTop = "20px";
+table.style.fontSize = "14px";
+table.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)";
+
+table.innerHTML = `
+    <thead>
+        <tr>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">item Name</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Purity</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">HSN</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Quantity</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Net Weight</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Gross Weight</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Gold Amount</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Making Charges(W/S)</th>
+            <th style="border: 1px solid #8b0000; padding: 10px; background-color: #FFFFFF; color: #000000; font-weight: bold;">Total Amount (₹)</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+`;
+
+const tbody = table.querySelector("tbody");
+
+// Populate table with item details
+itemsForSale.forEach((item) => {
+    const cgstDisplay = includeGST ? `1.5 %` : "-";
+    const sgstDisplay = includeGST ? `1.5 %` : "-";
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.itemName}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.purity}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.HSN}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.quantity}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.netWeight}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.grossWeight}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.GoldTotalPrice.toFixed(2)}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.makingChargesPercentage}</td>
+        <td style="border: 1px solid #8b0000; padding: 10px;">${item.totalPrice.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+});
+
+invoiceContainer.appendChild(table);
+
+// Create a Flex Container for Amount in Words and Summary Table
+const summaryContainer = document.createElement("div");
+summaryContainer.style.display = "flex";
+summaryContainer.style.justifyContent = "space-between";
+summaryContainer.style.alignItems = "center";
+summaryContainer.style.marginTop = "10px";
+
+// Amount in Words (Left Side)
+const amountInWords = document.createElement("p");
+amountInWords.innerHTML = `<strong>Amount in Words:</strong> ${numberToWords(Math.round(totalAmount))} Rupees Only`;
+amountInWords.style.color = "#8b0000"; // Deep red text
+amountInWords.style.fontWeight = "bold";
+amountInWords.style.flex = "1"; // Takes up available space on the left
+
+// New Summary Table for CGST, SGST, and Total Amount (Right Side)
+const totalSummaryTable = document.createElement("table");
+totalSummaryTable.style.width = "250px"; // Adjust width
+totalSummaryTable.style.borderCollapse = "collapse";
+totalSummaryTable.style.fontSize = "14px";
+
+totalSummaryTable.innerHTML = `
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">CGST</td>
+        <td style="border: 1px solid #8b0000; padding: 8px;">${includeGST ? "1.5 %" : "-"}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">SGST</td>
+        <td style="border: 1px solid #8b0000; padding: 8px;">${includeGST ? "1.5 %" : "-"}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold; color: #8b0000;">Total Amount</td>
+        <td style="border: 1px solid #8b0000; padding: 8px; font-weight: bold;">₹ ${totalAmount.toFixed(2)}</td>
+    </tr>
+`;
+
+
+// Append Amount in Words and Summary Table inside the flex container
+summaryContainer.appendChild(amountInWords);
+summaryContainer.appendChild(totalSummaryTable);
+
+// Append the entire summary container to invoiceContainer
+invoiceContainer.appendChild(summaryContainer);
+
+// ✅ Create a div for Payment Breakdown (Small Table)
+const paymentSummaryDiv = document.createElement("div");
+paymentSummaryDiv.style.width = "max-content"; // Small table width
+paymentSummaryDiv.style.marginTop = "10px"; // Add some space before this section
+
+paymentSummaryDiv.innerHTML = `
+    <p><strong>Payment Breakdown:</strong></p>
+    <table style="border-collapse: collapse; width: auto; margin-top: 5px; font-size: 14px;">
+        <tr>
+            <th style="border: 1px solid #8b0000; padding: 4px; background-color: #f8f0e3; color: #8b0000;">Method</th>
+            <th style="border: 1px solid #8b0000; padding: 4px; background-color: #f8f0e3; color: #8b0000;">Amount (₹)</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 4px;">Cash</td>
+            <td style="border: 1px solid #8b0000; padding: 4px;">₹${cashAmount}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 4px;">UPI</td>
+            <td style="border: 1px solid #8b0000; padding: 4px;">₹${upiAmount}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #8b0000; padding: 4px;">Old Gold</td>
+            <td style="border: 1px solid #8b0000; padding: 4px;">₹${oldGoldReturnAmount}</td>
+        </tr>
+    </table>
+`;
+
+// Append the entire summary container to invoiceContainer
+invoiceContainer.appendChild(paymentSummaryDiv);
+
+
+    // Signature and Terms Section
+const signatureTermsSection = document.createElement("div");
+signatureTermsSection.style.display = "flex";
+signatureTermsSection.style.flexDirection = "column";  // Stack items vertically
+signatureTermsSection.style.alignItems = "flex-start"; // Align left
+signatureTermsSection.style.marginTop = "5px"; // Space from above content
+signatureTermsSection.style.width = "100%";
+
+// Authorized Signatory
+const signatureBox = document.createElement("div");
+signatureBox.style.width = "30%";  // Smaller width for signature
+signatureBox.style.border = "1px solid #000"; // Dark border for signature box
+signatureBox.style.padding = "10px";
+signatureBox.style.textAlign = "center";
+signatureBox.style.fontWeight = "bold";
+signatureBox.innerHTML = `
+    <strong>Billed By</strong><br><br>
+            ${BilledBy}
+`;
+signatureTermsSection.appendChild(signatureBox);
+
+// Terms and Conditions - Positioned as a footer
+const termsSection = document.createElement("div");
+termsSection.style.marginTop = "10px"; // Space below signature box
+termsSection.style.width = "100%";
+termsSection.style.fontSize = "12px";
+termsSection.style.color = "#555";
+termsSection.style.borderTop = "1px solid #000"; // Footer-like separator
+termsSection.style.paddingTop = "10px";
+termsSection.innerHTML = `
+`;
+
+signatureTermsSection.appendChild(termsSection);
+
+invoiceContainer.appendChild(signatureTermsSection);
+
+    // Append the invoice to the body
+    document.body.appendChild(invoiceContainer);
+
+    // Print the invoice
+    setTimeout(() => {
+    window.print();
+}, 2000); // Delay by 1 second
+
+// // Refresh page - printing
+window.onafterprint = () => {
+    window.location.reload();
+};
+
+}
+
+
+
+document.getElementById("finalizeSaleForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Validate cart
+    if (cart.length === 0) {
+        alert("Please add at least one item to the cart.");
+        return;
+    }
+
+    // Get form inputs
+    const includeGST = document.getElementById("includeGST").value === "true";
+    const customerName = document.getElementById("customerName").value.trim();
+    const customerPhone = document.getElementById("customerPhone").value.trim();
+    const customerEmail = "";
+    const paymentMethod = document.getElementById("paymentMethod").value;
+
+    // Payment breakdown
+    const cashAmount = parseFloat(document.getElementById("Cash").value) || 0;
+    const upiAmount = parseFloat(document.getElementById("Upi").value) || 0;
+    const oldGoldReturnAmount = parseFloat(document.getElementById("OldGoldReturn").value) || 0;
+    const BilledBy = document.getElementById("BilledBy").value
+    const silverRate =document.getElementById("SilverRate").value;
+
+    // Validate customer details
+    if (!customerName || !customerPhone) {
+        alert("Please fill in all customer details.");
+        return;
+    }
+
+    // Calculate total amount
+    let totalAmount = 0;
+    const itemsForSale = cart.map((item) => {
+        // Calculate total price before GST
+        const totalPriceWithoutGST = item.totalPrice;
+        totalAmount += totalPriceWithoutGST;
+        const GoldTotalPrice = (item.itemType / 100) * item.netWeight * item.goldRate;
+
+        return {
+            itemName: item.itemName,
+            itemType: item.itemType, // Purity
+            HSN: item.HSN,
+            quantity: item.quantity,
+            GoldTotalPrice: GoldTotalPrice,
+            netWeight: item.netWeight, // Net weight
+            grossWeight: item.grossWeight, // Gross weight
+            goldRate: item.goldRate, // Gold rate per gram
+            makingChargesPercentage: item.makingChargesPercentage,
+            totalPriceWithoutGST, // Total price before GST
+            purity: item.itemType, // Adding purity explicitly
+            totalPrice: totalPriceWithoutGST  // Calculate total price with GST if applicable
+        };
+    });
+
+    // Apply GST (3%) if included
+    let gstAmount = 0;
+    if (includeGST) {
+        gstAmount = totalAmount * 0.03; // 3% of totalAmount
+        totalAmount += gstAmount; // Add GST to total
+    }
+
+    try {
+        // Record the sale in Firestore
+        const salesRef = collection(db, "sales");
+        await addDoc(salesRef, {
+            customerName,
+            customerPhone,
+            customerEmail,
+            paymentMethod,
+            items: itemsForSale,
+            totalAmount,
+            gstAmount, // Store GST separately
+            soldAt: new Date(),
+            includeGST,
+            payments: {
+                cash: cashAmount,
+                upi: upiAmount,
+                oldGoldReturn: oldGoldReturnAmount,
+                BilledBy:BilledBy
+            }
+        });
+
+        // Reduce inventory quantity and weight for each item
+        for (const item of cart) {
+            const inventoryRef = collection(db, "inventory");
+            const q = query(inventoryRef, where("item", "==", item.itemName));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const docId = querySnapshot.docs[0].id;
+                const docData = querySnapshot.docs[0].data();
+                const docRef = doc(db, "inventory", docId);
+
+                await updateDoc(docRef, {
+                    quantity: docData.quantity - item.quantity,
+                    WeightInGrams: docData.WeightInGrams - item.netWeight
+                });
+            }
+        }
+
+        // Success message
+        alert("Sale finalized successfully!");
+
+        // Generate invoice with updated details
+        generateInvoice(customerName, customerPhone, customerEmail, paymentMethod, itemsForSale, totalAmount, includeGST,cashAmount,upiAmount,oldGoldReturnAmount,BilledBy,silverRate,GoldRate);
+
+        // Clear the cart and reset the form
+        cart.length = 0;
+        renderCart();
+        document.getElementById("finalizeSaleForm").reset();
+    } catch (error) {
+        console.error("Error finalizing sale: ", error);
+        alert("Failed to finalize the sale. Please try again.");
+    }
+});
+
+   
+
+if (sessionStorage.getItem("isLoggedIn") !== "true") {
+        // Redirect to login page if not logged in
+        window.location.href = "index.html";
+    }
+
+        // Attach event listener to input field for dynamic suggestions
+        document.getElementById("itemName").addEventListener("input", populateItemSuggestions);
+    </script>
+</body>
+</html>
